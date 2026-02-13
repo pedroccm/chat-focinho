@@ -90,6 +90,7 @@ export function ChatInterface() {
   const [isTyping, setIsTyping] = useState(false);
   const [progress, setProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [paymentInfo, setPaymentInfo] = useState<{ pixId: string; orderId: string } | null>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -441,6 +442,9 @@ export function ChatInterface() {
         },
       });
 
+      // Store payment info for simulation
+      setPaymentInfo({ pixId: json.pixId, orderId: json.orderId });
+
       // Start polling for payment
       pollingRef.current = setInterval(async () => {
         try {
@@ -476,6 +480,28 @@ export function ChatInterface() {
     }
   };
 
+  const handleSimulatePayment = async () => {
+    if (!paymentInfo) return;
+    try {
+      const res = await fetch(
+        `/api/checkout/status?pixId=${paymentInfo.pixId}&orderId=${paymentInfo.orderId}&simulate=true`
+      );
+      const json = await res.json();
+      if (json.status === "PAID") {
+        if (pollingRef.current) clearInterval(pollingRef.current);
+        pollingRef.current = null;
+        setPaymentInfo(null);
+        const email = data.customerEmail;
+        await addBotMessage(
+          `Pagamento confirmado! Seus dados de acesso foram enviados para ${email}. Obrigado por usar o Fotofocinho!`
+        );
+        setStep("complete");
+      }
+    } catch {
+      await addBotMessage("Erro ao simular pagamento. Tente novamente.");
+    }
+  };
+
   const handleReset = () => {
     setMessages([]);
     setData({
@@ -497,6 +523,7 @@ export function ChatInterface() {
       shippingNumber: "",
       shippingComplement: "",
     });
+    setPaymentInfo(null);
     setStep("welcome");
     msgCounter = 0;
     // Re-trigger welcome
@@ -565,6 +592,18 @@ export function ChatInterface() {
 
         {!isTyping && step === "size-selection" && selectedProduct?.sizes && (
           <ChatSizeSelector sizes={selectedProduct.sizes} onSelect={handleSizeSelect} />
+        )}
+
+        {!isTyping && step === "payment" && paymentInfo && (
+          <div style={{ textAlign: "center", padding: "12px 0" }}>
+            <button
+              className="confirm-btn"
+              onClick={handleSimulatePayment}
+              style={{ background: "var(--sage)" }}
+            >
+              Simular Pagamento (Dev)
+            </button>
+          </div>
         )}
 
         {!isTyping && step === "complete" && (

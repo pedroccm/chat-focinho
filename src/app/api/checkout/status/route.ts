@@ -85,8 +85,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "pixId and orderId required" }, { status: 400 });
     }
 
-    // Dev-only: simulate payment
-    if (simulate === "true" && process.env.NODE_ENV === "development") {
+    // Dev: simulate payment (allowed when using AbacatePay dev key or NODE_ENV=development)
+    const isDevKey = process.env.ABACATEPAY_API_KEY?.startsWith("abc_dev_");
+    if (simulate === "true" && (isDevKey || process.env.NODE_ENV === "development")) {
       await fulfillOrder(orderId);
       return NextResponse.json({ status: "PAID", expiresAt: null });
     }
