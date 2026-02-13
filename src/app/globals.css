@@ -61,6 +61,24 @@ body {
   flex-shrink: 0;
 }
 
+.chat-header-menu-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--earth-light);
+  text-decoration: none;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.chat-header-menu-btn:hover {
+  background: var(--sage-light);
+  color: var(--earth);
+}
+
 .chat-header-info h1 {
   font-family: var(--font-fraunces), serif;
   font-size: 18px;

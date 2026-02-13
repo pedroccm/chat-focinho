@@ -559,10 +559,20 @@ export function ChatInterface() {
             <path d="M4.5 9.5C4.5 5.36 7.86 2 12 2s7.5 3.36 7.5 7.5c0 2.9-1.64 5.41-4.04 6.67L14 17.5V19a2 2 0 01-2 2h0a2 2 0 01-2-2v-1.5l-1.46-1.33C6.14 14.91 4.5 12.4 4.5 9.5zM9 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm6 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm-5 3.5c0 1.1 1.34 2 3 2s3-.9 3-2" />
           </svg>
         </div>
-        <div className="chat-header-info">
+        <div className="chat-header-info" style={{ flex: 1 }}>
           <h1>Focinho</h1>
           <p>Pet Portrait Assistant</p>
         </div>
+        <a
+          href="/minha-conta"
+          className="chat-header-menu-btn"
+          title="Minha Conta"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </a>
       </div>
 
       {/* Messages */}
